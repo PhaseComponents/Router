@@ -22,23 +22,27 @@ class Router implements RouterInterface {
         $url = implode("/", $uri);
         foreach($this->routes->getCollection() as $collection) {
             $coll = implode("/", $collection[0]);
-            if($url === $coll) {
+            
+            if(substr($url, 0, strlen($coll)) === $coll) {
                 if($this->getRequestMethod() == $collection[1]) {
-                    $args = array_splice($uri, count($collection[0])); 
                     
+                    $args = array_splice($uri, count($collection[0])); 
                     if(gettype($collection[2]) == "object") {
                         call_user_func_array($collection[2], $args);
+                        
                     } else if(gettype($collection[2]) == "string"){
                         $explode = explode("@", $collection[2]);
                         $controller = new $explode[0];
                         $method = $explode[1];
                         
                         call_user_func_array(array($controller,$method), $args);
+                        
                     } else {
                         $controller = new $collection[2]["controller"];
                         $method = $collection[2]["method"];
                         
                         call_user_func_array(array($controller,$method), $args);
+                        
                     }
                 } else {
                     if (!headers_sent()) {

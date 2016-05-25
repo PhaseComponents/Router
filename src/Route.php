@@ -70,10 +70,13 @@ class Route extends RouteCollection implements RouteInterface {
      * Passing settings to set Route settings
      * @param array $settings
      */
-    public function group(Array $settings) {
+    public function group(Array $settings, callable $callback) {
         foreach($settings as $key => $setting) {
             $this->$key = $setting;
         }
+        
+        $callback();
+        $this->prefix = NULL;
     }
     
 }
