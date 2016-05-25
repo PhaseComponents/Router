@@ -1,0 +1,22 @@
+{   
+    "name": "phase/cache",
+    "description": "Routing library",
+    "license": "MIT",
+    "keywords": ["Route","Router","Routing"],
+    "authors": [
+        {
+            "name": "Strahinja Djuric",
+            "email": "radju22@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "Phase\\Router\\": "src/"
+        }
+    },
+    
+    "require": {
+        "phpunit/phpunit": "^5.1"
+    }
+}
