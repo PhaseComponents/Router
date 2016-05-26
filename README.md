@@ -2,7 +2,7 @@
 Phase router component
 
 [![Build Status](https://travis-ci.org/PhaseComponents/Router.svg?branch=master)](https://travis-ci.org/PhaseComponents/Router)
-[![codecov](https://codecov.io/gh/PhaseComponents/Router/branch/master/graph/badge.svg)](https://codecov.io/gh/PhaseComponents/Router)
+[![Coverage](https://codecov.io/gh/PhaseComponents/Router/branch/master/graph/badge.svg)](https://codecov.io/gh/PhaseComponents/Router)
 
 
 Phase\Router component is lightweigth wraped for Rapid Application development (RAD) and fast setup for REST API.
