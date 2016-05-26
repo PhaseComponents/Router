@@ -2,7 +2,7 @@
 
 namespace Phase\Router;
 
-class Router implements RouterInterface {
+class Router extends Request implements RouterInterface {
     protected $routes;
     protected $prefix;
     /**
@@ -14,7 +14,7 @@ class Router implements RouterInterface {
     }
     
     /**
-     * Run router
+     * Dispatcher
      * @return void
      */
     final public function run() {
@@ -30,6 +30,8 @@ class Router implements RouterInterface {
                     if(gettype($collection[2]) == "object") {
                         call_user_func_array($collection[2], $args);
                         
+                        return 1;
+                        
                     } else if(gettype($collection[2]) == "string"){
                         $explode = explode("@", $collection[2]);
                         $controller = new $explode[0];
@@ -37,20 +39,31 @@ class Router implements RouterInterface {
                         
                         call_user_func_array(array($controller,$method), $args);
                         
-                    } else {
-                        $controller = new $collection[2]["controller"];
-                        $method = $collection[2]["method"];
+                        return 1;
                         
-                        call_user_func_array(array($controller,$method), $args);
+                    } else {
+                        if(class_exists($collection[2]["controller"])) {
+                            $controller = new $collection[2]["controller"];
+                            $method = $collection[2]["method"];
+
+                            call_user_func_array(array($controller,$method), $args);
+                        }
+                        
+                        return 1;
                         
                     }
                 } else {
                     if (!headers_sent()) {
-                        header('HTTP/1.1 405 Method Not Allowed');
+                        header("HTTP/1.1 405 Method Not Allowed");
                         exit;
                     }
                 }
             }
+        }
+        
+        if (!headers_sent()) {
+            header("HTTP/1.1 404 Not Found");
+            exit;
         }
         
     }
@@ -61,40 +74,7 @@ class Router implements RouterInterface {
      */
     public function getRoutes() {
         return $this->routes;
-    }
-    
-    /**
-     * Returns $_SERVER array
-     * @return array
-     */
-    public function getRequest() {
-        return $_SERVER;
-    }
-    
-    /**
-     * Get request time integer
-     * @return int
-     */
-    public function getRequestTime() {
-        $request = $this->getRequest();
-        return $request["REQUEST_TIME"];
-    }
-    
-    /**
-     * Get request method 
-     * @return string
-     */
-    public function getRequestMethod() {
-        return $this->getRequest()["REQUEST_METHOD"];
-    }
-    /**
-     * Get request URI
-     * @return string
-     */
-    public function getRequestURI() {
-        return $this->getRequest()["REQUEST_URI"];
-    }
-    
+    } 
     /**
      * Gets route path excluding project directory
      * @return array
@@ -104,22 +84,5 @@ class Router implements RouterInterface {
         $rootDIR = array_search($this->getProjectDIR(), $uri);
         
         return array_splice($uri, ($rootDIR+1));
-    }
-   
-    /**
-     * Document root of requested path
-     * @return string
-     */
-    public function getRequestDocumentRoot() {
-        return $this->getRequest()["DOCUMENT_ROOT"];
-    }
-    
-    /**
-     * Get directory of project
-     * @return string
-     */
-    public function getProjectDIR() {
-        $documentRoot = explode("/", $this->getRequestDocumentRoot());
-        return $documentRoot[count($documentRoot) - 1];
     }
 }

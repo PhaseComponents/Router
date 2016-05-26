@@ -37,22 +37,30 @@ class Route extends RouteCollection implements RouteInterface {
      * @param function $callback
      */
     public function post($route,$callback) {
-        $route = explode("/", $this->prefix ."/". $route);
+        if(is_null($this->prefix)) {
+            $route = explode("/", $route);
+        } else {
+            $route = explode("/", $this->prefix ."/". $route);
+        }
+        
         $this->collect([$route,"POST",$callback,$this->middleware]);
     }
     
     public function controller($route, $controller) {
-        $cntrl = new $controller;
-        $methods = get_class_methods($cntrl);
+        if(!class_exists($controller)) {
+            return false;
+        }
+        
+        $methods = get_class_methods($controller);
         
         foreach($methods as $method) {                
             if(strpos($method, "get") !== false) {
                 $mth = "GET";
-                $num = strlen($mth);
             } else {
-                $mth = "POST";
-                $num = strlen($mth);
+                $mth = "POST";             
             }
+            
+            $num = strlen($mth);
             
             $rt = strtolower(substr($method, $num));
             if(is_null($this->prefix)) {
@@ -62,6 +70,8 @@ class Route extends RouteCollection implements RouteInterface {
             }
             
             $completedRoute = explode("/", $r);
+            
+            var_dump($completedRoute);
             
            $this->collect([$completedRoute, $mth,["controller" => $controller, "method" => $method],$this->middleware]);
         }

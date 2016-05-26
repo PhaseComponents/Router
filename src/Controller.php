@@ -2,7 +2,7 @@
 
 namespace Phase\Router;
 
-class Controller {
+class Controller extends Request {
    
 }
 
