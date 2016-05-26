@@ -1,47 +1,50 @@
 <?php
 
+require_once("src/RequestMethods.php");
+
+use Phase\Router\RequestMethods as Method;
+
 class RouteTest extends PHPUnit_Framework_TestCase {
     private $defaultRoute = "default";
     private $prefix = "route";
-    
+
     public function test_controller() {
 //         if(!class_exists($controller)) {
 //            return false;
 //        }
-        
+
         $methods = ["getTest"];
-        
-        foreach($methods as $method) {                
+
+        foreach($methods as $method) {
             if(strpos($method, "get") !== false) {
-                $mth = "GET";
+                $mth = Method::GET;
             } else {
-                $mth = "POST"; 
+                $mth = Method::POST;
             }
-            
+
             $num = strlen($mth);
-            
+
             $rt = strtolower(substr($method, $num));
             if(is_null($this->prefix)) {
                 $r = $this->defaultRoute ."/". $rt;
             } else {
                 $r = $this->prefix ."/". $this->defaultRoute ."/". $rt;
             }
-            
+
             $completedRoute = explode("/", $r);
-                   
+
             $diff = count(array_diff($completedRoute, ["route","default","test"]));
             if($diff === 0) {
                 $this->assertTrue(true);
             } else {
                 $this->assertTrue(false);
             }
-            
-           
+
+
         }
     }
-    
-    
-    
-    
-}
 
+
+
+
+}
