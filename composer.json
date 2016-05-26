@@ -1,8 +1,8 @@
 {   
-    "name": "phase/cache",
+    "name": "phase/router",
     "description": "Routing library",
     "license": "MIT",
-    "keywords": ["Route","Router","Routing"],
+    "keywords": ["Route","Router","Routing","RAD","VRAD","Rapid Application Development","Fast development"],
     "authors": [
         {
             "name": "Strahinja Djuric",
