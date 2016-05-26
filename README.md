@@ -3,7 +3,7 @@ Phase router component
 
 [![Build Status](https://travis-ci.org/PhaseComponents/Router.svg?branch=master)](https://travis-ci.org/PhaseComponents/Router)
 
-Phase\Router component is wraped for Rapid Application development (RAD). 
+Phase\Router component is lightweigth wraped for Rapid Application development (RAD) and fast setup for REST API.
 
 ##Getting started
 
