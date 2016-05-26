@@ -5,12 +5,12 @@ Phase router component
 
 Phase\Router component is wraped for Rapid Application development (RAD). 
 
-#Getting started
+##Getting started
 
 `composer require phase/router`
 
 
-#How to use
+##How to use
 
 Firstly we need to initilize our object that will handle route creation.
 
@@ -48,7 +48,7 @@ Since we defined our controller,reaching route `/test/index` will run `getIndex`
 
 *Note: Reaching any route that route isn't defined before, will throw header with`404 Not Found`.*
 
-#Grouping
+##Grouping
 
 Router also provides possibility of grouping routes and controllers that will have same prefix.
 
