@@ -109,7 +109,7 @@ class RouterTest extends PHPUnit_Framework_TestCase {
 
     }
 
-    private function callClassMethod(Array $classFromCollection, Array $args) {
+    private function callClassMethod(array $classFromCollection, array $args) {
       if(class_exists($classFromCollection["controller"])) {
           $controller = new $classFromCollection["controller"];
           $method =  $classFromCollection["method"];
@@ -118,7 +118,7 @@ class RouterTest extends PHPUnit_Framework_TestCase {
       }
     }
 
-    private function distinctClass(String $classFromCollection, Array $args) {
+    private function distinctClass($classFromCollection, array $args) {
         $explode = explode("@", $classFromCollection);
         $controller = new $explode[0];
         $method = $explode[1];
