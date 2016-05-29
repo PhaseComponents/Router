@@ -1,8 +1,11 @@
 <?php
 
-namespace Phase\Router;
+namespace Phase\Router\Request;
 
 class RequestMethods {
     const GET = "GET";
     const POST = "POST";
 }
+
+
+?>

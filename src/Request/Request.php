@@ -1,6 +1,6 @@
 <?php
 
-namespace Phase\Router;
+namespace Phase\Router\Request;
 
 class Request {
     /**
@@ -10,7 +10,7 @@ class Request {
     protected function getRequest() {
         return $_SERVER;
     }
-    
+
     /**
      * Get request time integer
      * @return int
@@ -19,9 +19,9 @@ class Request {
         $request = $this->getRequest();
         return $request["REQUEST_TIME"];
     }
-    
+
     /**
-     * Get request method 
+     * Get request method
      * @return string
      */
     protected function getRequestMethod() {
@@ -34,7 +34,7 @@ class Request {
     protected function getRequestURI() {
         return $this->getRequest()["REQUEST_URI"];
     }
-       
+
     /**
      * Document root of requested path
      * @return string
@@ -42,7 +42,7 @@ class Request {
     protected function getRequestDocumentRoot() {
         return $this->getRequest()["DOCUMENT_ROOT"];
     }
-    
+
     /**
      * Get directory of project
      * @return string
@@ -52,4 +52,3 @@ class Request {
         return $documentRoot[count($documentRoot) - 1];
     }
 }
-

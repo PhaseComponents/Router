@@ -1,8 +1,6 @@
 <?php
 
-require_once("src/RequestMethods.php");
-
-use Phase\Router\RequestMethods as Method;
+use Phase\Router\Request\RequestMethods as Method;
 
 class RouteTest extends PHPUnit_Framework_TestCase {
     private $defaultRoute = "default";

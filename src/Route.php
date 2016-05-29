@@ -2,7 +2,7 @@
 
 namespace Phase\Router;
 
-use Phase\Router\RequestMethods as Method;
+use Phase\Router\Request\RequestMethods as Method;
 
 class Route extends RouteCollection implements RouteInterface {
     protected $prefix;
@@ -57,7 +57,7 @@ class Route extends RouteCollection implements RouteInterface {
 
         foreach($methods as $method) {
             if(strpos($method, "get") !== false) {
-                $mth = Method::POST;
+                $mth = Method::GET;
             } else {
                 $mth = Method::POST;
             }
@@ -73,12 +73,12 @@ class Route extends RouteCollection implements RouteInterface {
 
             $completedRoute = explode("/", $r);
 
-           $this->collect([
-             $completedRoute,
-             $mth,
-             ["controller" => $controller, "method" => $method],
-             $this->middleware
-           ]);
+            $this->collect([
+               $completedRoute,
+               $mth,
+               ["controller" => $controller, "method" => $method],
+               $this->middleware
+            ]);
         }
     }
     /**
