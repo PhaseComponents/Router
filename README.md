@@ -66,7 +66,7 @@ Router also provides possibility of grouping routes and controllers that will ha
 
 All provided routes in group will be reachable prefixing them with provided `prefix` option.
 
-###middleware
+###Middleware
 
 Phase\Router also enables middlewares, be aware that every route created and isn't grouped will use default middleware of router Phase\Router\Http\Middleware.
 Defining middleware for group of routes is same like adding prefix.
@@ -86,3 +86,24 @@ Also is possible to prefix them and use middleware for that prefixed group like 
 
         $route->controller("test", 'TestController');
     });
+
+
+Now, lets take a look at Phase\Router\Http\Middleware
+
+    namespace Phase\Router\Http;
+
+    class Middleware extends Request {
+        /**
+        * Gateway from middleware to applications
+        * Every route without middleware defaults to
+        * this middleware handle
+        * @return boolean
+        */
+        public function handle() {
+            return true;
+        }
+
+    }
+
+Before entering application, router will enter `handle` method to see does it return true, if it does, then router allow request to pass further to application.
+Basically `handle` is gateway between request and application, all main middleware logic should be there.
