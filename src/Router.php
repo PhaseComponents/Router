@@ -32,7 +32,6 @@ class Router extends Request implements RouterInterface {
 
         foreach($this->routes->getCollection() as $route => $collection) {
                 $coll = implode("/", $collection[0]);
-                $args = array_splice($uri, count($collection[0]));
                 $match = addcslashes($coll,'/');
 
                 if(preg_match("/^($match)/i", $url)) {
@@ -59,6 +58,7 @@ class Router extends Request implements RouterInterface {
                         }
                         // if there aren't arguments
                         // maybe request is passing classic $_GET or $_POST
+                        $args = array_splice($uri, count($collection[0]));
                         if(count($args) === 0) {
                             if($this->getRequestMethod() === Method::GET)
                                 $args = $_GET;
