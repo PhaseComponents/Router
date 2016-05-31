@@ -80,7 +80,7 @@ Defining middleware for group of routes is same like adding prefix.
 
 Also is possible to prefix them and use middleware for that prefixed group like this
 
-    $route->group(["middleware" => "Your\Middleware"], function() use ($route) {
+    $route->group(["prefix" => "admin", "middleware" => "Your\Middleware"], function() use ($route) {
 
         $route->get("home", function() {});
 
