@@ -2,7 +2,7 @@
 
 namespace Phase\Router;
 
-use Phase\Router\Request\RequestMethods as Method;
+use Phase\Router\Http\RequestMethods as Method;
 
 class Route extends RouteCollection implements RouteInterface {
     protected $prefix;
@@ -29,7 +29,13 @@ class Route extends RouteCollection implements RouteInterface {
             $route = explode("/", $this->prefix ."/". $route);
         }
 
-        $this->collect([$route,Method::GET,$callback,$this->middleware]);
+        if(is_null($this->middleware)) {
+          $middleware = Http\Middleware::class;
+        } else {
+          $middleware = $this->middleware;
+        }
+
+        $this->collect([$route,Method::GET,$callback,$middleware]);
     }
     /**
      * Creating route available on POST method
@@ -45,7 +51,7 @@ class Route extends RouteCollection implements RouteInterface {
             $route = explode("/", $this->prefix ."/". $route);
         }
 
-        $this->collect([$route,Method::POST,$callback,$this->middleware]);
+        $this->collect([$route,Method::POST,$callback,Phase\Router\Http\Middleware::class]);
     }
 
     public function controller($route, $controller) {
@@ -92,6 +98,7 @@ class Route extends RouteCollection implements RouteInterface {
 
         $callback();
         $this->prefix = NULL;
+        $this->middleware = NULL;
     }
 
 }

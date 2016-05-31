@@ -2,8 +2,9 @@
 
 namespace Phase\Router;
 
-use Phase\Router\Request\HeaderMessage;
-use Phase\Router\Request\Request;
+use Phase\Router\Http\HeaderMessage;
+use Phase\Router\Http\Request;
+use Phase\Router\Http\RequestMethods as Method;
 
 class Router extends Request implements RouterInterface {
     protected $routes;
@@ -13,11 +14,7 @@ class Router extends Request implements RouterInterface {
     */
     protected $headerMessage;
     /**
-    * Phase\Router\Request\Protector instance
-    */
-    protected $protector;
-    /**
-     * Construct Router with RouteCollections
+     * Construct Router
      * @return void
      */
     public function __construct(RouteCollection $routes) {
@@ -32,34 +29,52 @@ class Router extends Request implements RouterInterface {
         $uri = $this->parseURI();
         $url = implode("/", $uri);
 
-        foreach($this->routes->getCollection() as $collection) {
-            $coll = implode("/", $collection[0]);
-            if(substr($url, 0, strlen($coll)) === $coll
-                && $url[strlen($coll)] === "/"
-                && $this->getRequestMethod() == $collection[1]) {
-
+        foreach($this->routes->getCollection() as $route => $collection) {
+                $coll = implode("/", $collection[0]);
                 $args = array_splice($uri, count($collection[0]));
+                $match = addcslashes($coll,'/');
 
-                if(is_callable($collection[2])) {
-                    call_user_func_array($collection[2], $args);
-                    return true;
-                }
+                if(preg_match("/($match)/i", $url)) {
+                  // construct middleware
+                    if(class_exists(end($collection))) {
+                      $middleware = new $collection[3];
+                      // middleware handle didnt passed,
+                      // dont pass request further to router
+                      if( ! $middleware->handle()) {
+                          return false;
+                      }
 
-                if(is_string($collection[2])){
-                    $this->distinctClass($collection[2], $args);
-                    return true;
-                }
+                      if($collection[1] != $this->getRequestMethod()) {
+                          $this->headerMessage->sendHeader405();
+                          return true;
+                      }
 
-                if(is_array($collection[2]) && isset($collection[2]["controller"])) {
-                    $this->callClassMethod($collection[2], $args);
-                    return true;
+                    if(count($args) === 0) {
+                        if($this->getRequestMethod() === Method::GET)
+                            $args = $_GET;
+
+                        if($this->getRequestMethod() === Method::POST)
+                            $args = $_POST;
+
+                    }
+
+                    if(is_callable($collection[2])) {
+                        call_user_func_array($collection[2], $args);
+                        return true;
+                    }
+
+                    if(is_string($collection[2])){
+                        $this->distinctClass($collection[2], $args);
+                        return true;
+                    }
+
+                    if(is_array($collection[2]) && isset($collection[2]["controller"])) {
+                        $this->callClassMethod($collection[2], $args);
+                        return true;
+                    }
                 }
             }
 
-            if($collection[1] != $this->getRequestMethod()) {
-                $this->headerMessage->sendHeader405();
-                return true;
-            }
         }
 
         $this->headerMessage->sendHeader404();
