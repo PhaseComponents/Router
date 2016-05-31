@@ -107,3 +107,5 @@ Now, lets take a look at Phase\Router\Http\Middleware
 
 Before entering application, router will enter `handle` method to see does it return true, if it does, then router allow request to pass further to application.
 Basically `handle` is gateway between request and application, all main middleware logic should be there.
+
+*Note: Your custom Middlewares should extend Phase\Router\Http\Middleware or implement Phase\Router\Http\MiddlewareInterface
