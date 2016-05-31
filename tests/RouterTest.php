@@ -51,7 +51,7 @@ class RouterTest extends PHPUnit_Framework_TestCase {
                   }
 
                   if($collection[1] != "GET") {
-                      $this->headerMessage->sendHeader405();
+                      $this->assertTrue($this->headerMessage->sendHeader405());
                       return true;
                   }
 
@@ -108,7 +108,7 @@ class RouterTest extends PHPUnit_Framework_TestCase {
                 }
 
                 if($collection[1] != "POST") {
-                    $this->headerMessage->sendHeader405();
+                    $this->assertTrue($this->headerMessage->sendHeader405());
                     return true;
                 }
 
