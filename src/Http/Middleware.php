@@ -2,7 +2,7 @@
 
 namespace Phase\Router\Http;
 
-class Middleware extends Request {
+class Middleware extends Request implements MiddlewareInterface {
     /**
     * Gateway from middleware to applications
     * Every route withour middleware defaults to

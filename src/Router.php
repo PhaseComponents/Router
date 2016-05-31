@@ -5,6 +5,7 @@ namespace Phase\Router;
 use Phase\Router\Http\HeaderMessage;
 use Phase\Router\Http\Request;
 use Phase\Router\Http\RequestMethods as Method;
+use Phase\Router\Http\MiddlewareInterfaceException as MIE;
 
 class Router extends Request implements RouterInterface {
     protected $routes;
@@ -34,49 +35,58 @@ class Router extends Request implements RouterInterface {
                 $args = array_splice($uri, count($collection[0]));
                 $match = addcslashes($coll,'/');
 
-                if(preg_match("/($match)/i", $url)) {
-                  // construct middleware
+                if(preg_match("/^($match)/i", $url)) {
+                    // forcing custom middlewares to extend Phase\Router\Http\Middleware
+                    // or to implement Phase\Router\Http\Middleware
+                    $classInterface = class_implements($collection[3]);
+                    $MiddlewareInterface = "Phase\Router\Http\MiddlewareInterface";
+                    if(!isset($classInterface[$MiddlewareInterface])) {
+                        throw new MIE("Not implemented Phase\Router\Http\MiddlewareInterface");
+                        return false;
+                    }
+
                     if(class_exists(end($collection))) {
-                      $middleware = new $collection[3];
-                      // middleware handle didnt passed,
-                      // dont pass request further to router
-                      if( ! $middleware->handle()) {
-                          return false;
-                      }
+                        $middleware = new $collection[3];
+                        // middleware handle didnt passed,
+                        // dont pass request further to router
+                        if( ! $middleware->handle()) {
+                            return false;
+                        }
+                        // check does request method matches with route method
+                        if($collection[1] != $this->getRequestMethod()) {
+                            $this->headerMessage->sendHeader405();
+                            return true;
+                        }
+                        // if there aren't arguments
+                        // maybe request is passing classic $_GET or $_POST
+                        if(count($args) === 0) {
+                            if($this->getRequestMethod() === Method::GET)
+                                $args = $_GET;
 
-                      if($collection[1] != $this->getRequestMethod()) {
-                          $this->headerMessage->sendHeader405();
-                          return true;
-                      }
+                            if($this->getRequestMethod() === Method::POST)
+                                $args = $_POST;
 
-                    if(count($args) === 0) {
-                        if($this->getRequestMethod() === Method::GET)
-                            $args = $_GET;
+                        }
 
-                        if($this->getRequestMethod() === Method::POST)
-                            $args = $_POST;
+                        if(is_callable($collection[2])) {
+                            call_user_func_array($collection[2], $args);
+                            return true;
+                        }
 
+                        if(is_string($collection[2])){
+                            $this->distinctClass($collection[2], $args);
+                            return true;
+                        }
+
+                        if(is_array($collection[2]) && isset($collection[2]["controller"])) {
+                            $this->callClassMethod($collection[2], $args);
+                            return true;
+                        }
                     }
-
-                    if(is_callable($collection[2])) {
-                        call_user_func_array($collection[2], $args);
-                        return true;
-                    }
-
-                    if(is_string($collection[2])){
-                        $this->distinctClass($collection[2], $args);
-                        return true;
-                    }
-
-                    if(is_array($collection[2]) && isset($collection[2]["controller"])) {
-                        $this->callClassMethod($collection[2], $args);
-                        return true;
-                    }
-                }
             }
 
         }
-
+        // route doesn't exist and return 404
         $this->headerMessage->sendHeader404();
 
     }
