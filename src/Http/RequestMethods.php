@@ -1,6 +1,6 @@
 <?php
 
-namespace Phase\Router\Request;
+namespace Phase\Router\Http;
 
 class RequestMethods {
     const GET = "GET";

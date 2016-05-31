@@ -1,4 +1,4 @@
-{   
+{
     "name": "phase/router",
     "description": "Routing library",
     "license": "MIT",
@@ -15,8 +15,7 @@
             "Phase\\Router\\": "src/"
         }
     },
-    
+
     "require": {
-        "phpunit/phpunit": "~4.0"
     }
 }

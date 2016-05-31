@@ -8,7 +8,7 @@ abstract class RouteCollection {
      * @var array
      */
     protected $collection = [];
-    
+
     /**
      * Push route to collection of routes
      * @param \Phase\Router\RouteInterface $route
@@ -24,4 +24,3 @@ abstract class RouteCollection {
         return $this->collection;
     }
 }
-
