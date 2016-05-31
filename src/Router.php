@@ -5,6 +5,7 @@ namespace Phase\Router;
 use Phase\Router\Http\HeaderMessage;
 use Phase\Router\Http\Request;
 use Phase\Router\Http\RequestMethods as Method;
+use Phase\Router\Http\MiddlewareInterfaceException as MIE;
 
 class Router extends Request implements RouterInterface {
     protected $routes;
@@ -34,8 +35,15 @@ class Router extends Request implements RouterInterface {
                 $args = array_splice($uri, count($collection[0]));
                 $match = addcslashes($coll,'/');
 
-                if(preg_match("/($match)/i", $url)) {
+                if(preg_match("/^($match)/i", $url)) {
                   // construct middleware
+                    $classInterface = class_implements($collection[3]);
+                    $MiddlewareInterface = "Phase\Router\Http\MiddlewareInterface";
+                    if(!isset($classInterface[$MiddlewareInterface])) {
+                        throw new MIE("Not implemented Phase\Router\Http\MiddlewareInterface");
+                        return false;
+                    }
+
                     if(class_exists(end($collection))) {
                       $middleware = new $collection[3];
                       // middleware handle didnt passed,
